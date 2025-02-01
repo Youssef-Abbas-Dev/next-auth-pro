@@ -7,7 +7,7 @@ const HomePage = () => {
         Home Page
       </h1>
       <div className="text-center mt-7">
-        <Link className="text-blue-800 underline text-2xl rounded-lg" href="/login">
+        <Link className="text-blue-800 underline text-2xl" href="/login">
           Go to login page
         </Link>
       </div>
