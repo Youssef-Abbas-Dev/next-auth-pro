@@ -26,15 +26,24 @@ const RegisterForm = () => {
         if (!validation.success)
             return setClientError(validation.error.errors[0].message);
 
+        setLoading(true);
         registerAction(user).then((result) => {
-            if (result?.error) setServerError(result.error);
-            if (result?.success) setServerSuccess(result.success);
+            if (result.success) {
+                setClientError("");
+                setServerError("");
+                setName("");
+                setEmail("");
+                setPassword("");
+                setServerSuccess(result.message);
+            }
+
+            if (!result.success) {
+                setServerSuccess("");
+                setServerError(result.message);
+            }
         });
 
-        setName("");
-        setEmail("");
-        setPassword("");
-        setClientError("");
+        setLoading(false);
     }
     return (
         <form onSubmit={formSubmitHandler}>
@@ -48,6 +57,7 @@ const RegisterForm = () => {
                     className="border border-slate-500 rounded-lg px-2 py-1 text-xl"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    disabled={loading}
                 />
             </div>
             <div className="flex flex-col mb-3">
@@ -60,6 +70,7 @@ const RegisterForm = () => {
                     className="border border-slate-500 rounded-lg px-2 py-1 text-xl"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    disabled={loading}
                 />
             </div>
             <div className="flex flex-col mb-3">
@@ -72,6 +83,7 @@ const RegisterForm = () => {
                     className="border border-slate-500 rounded-lg px-2 py-1 text-xl"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    disabled={loading}
                 />
             </div>
 
