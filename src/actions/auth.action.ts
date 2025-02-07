@@ -3,15 +3,32 @@ import { LoginSchema, RegisterSchema } from "@/utils/validationSchmas";
 import { z } from "zod";
 import { prisma } from "@/utils/prisma";
 import * as bcrypt from 'bcryptjs';
+import { signIn, signOut } from "@/auth";
+import { AuthError } from "next-auth";
 
 // Login Action
 export const loginAction = async (data: z.infer<typeof LoginSchema>) => {
     const validation = LoginSchema.safeParse(data);
     if (!validation.success)
-        return { error: "Invalid credentials" };
+        return { success: false, message: "Invalid credentials" };
 
-    console.log(data);
-    return { success: "Logged in successfully" }
+    const { email, password } = validation.data;
+
+    try {
+        await signIn("credentials", { email, password, redirectTo: "/profile" });
+    } catch (error) {
+        if (error instanceof AuthError) {
+            switch (error.type) {
+                case "CredentialsSignin":
+                    return { success: false, message: "Invalid email or password" };
+                default:
+                    return { success: false, message: "Something went wrong" };
+            }
+        }
+        throw error;
+    }
+
+    return { success: true, message: "Logged in successfully" }
 }
 
 // Register Action
@@ -32,4 +49,9 @@ export const registerAction = async (data: z.infer<typeof RegisterSchema>) => {
     });
 
     return { success: true, message: "Registered successfully" }
+}
+
+// Logout
+export const logoutAction = async () => {
+    await signOut();
 }
