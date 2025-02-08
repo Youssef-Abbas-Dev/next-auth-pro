@@ -1,8 +1,11 @@
-import { auth as middleware } from "@/auth";
 import { NextResponse } from "next/server";
+import authConfig from "./auth.config";
+import NextAuth from "next-auth";
+
+const { auth: middleware } = NextAuth(authConfig);
 
 const authRoutes = ["/login", "/register"];
-const protectedRotues = ["/profile"]
+const protectedRotues = ["/profile"];
 
 export default middleware((req) => {
     const { nextUrl } = req;

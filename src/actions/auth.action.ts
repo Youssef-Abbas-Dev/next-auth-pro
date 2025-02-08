@@ -38,17 +38,22 @@ export const registerAction = async (data: z.infer<typeof RegisterSchema>) => {
         return { success: false, message: "Invalid credentials" };
 
     const { name, password, email } = validation.data;
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (user) return { success: false, message: "User already exist" };
+    try {
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (user) return { success: false, message: "User already exist" };
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-    await prisma.user.create({
-        data: { email, name, password: hashedPassword }
-    });
+        await prisma.user.create({
+            data: { email, name, password: hashedPassword }
+        });
 
-    return { success: true, message: "Registered successfully" }
+        return { success: true, message: "Registered successfully" };
+
+    } catch (error) {
+        return { success: false, message: "Something went wrong, please try again" };
+    }
 }
 
 // Logout
