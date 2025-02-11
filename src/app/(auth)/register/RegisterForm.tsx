@@ -1,12 +1,12 @@
 "use client";
-import { FcGoogle } from "react-icons/fc";
-import { FaGithub } from "react-icons/fa";
+
 import { BsPersonPlus } from "react-icons/bs";
 import { useState } from "react";
 import { registerAction } from "@/actions/auth.action";
 import { RegisterSchema } from "@/utils/validationSchmas";
 import Spinner from "@/components/Spinner";
 import Alert from "@/components/Alert";
+import SocialProviders from "@/components/SocialProviders";
 
 const RegisterForm = () => {
     const [email, setEmail] = useState("");
@@ -93,14 +93,7 @@ const RegisterForm = () => {
             <button disabled={loading} className="disabled:bg-gray-300 flex items-center justify-center bg-slate-800 hover:bg-slate-900 mt-4 text-white cursor-pointer rounded-lg w-full p-2 text-xl" type="submit">
                 {loading ? <Spinner /> : <><BsPersonPlus className="me-1 text-2xl" /> Register</>}
             </button>
-            <div className="flex items-center justify-center gap-6 mt-6">
-                <div className="border bg-blue-100 hover:bg-blue-200 rounded px-4 py-2 cursor-pointer w-1/2 flex justify-center items-center">
-                    <FcGoogle className="text-4xl" />
-                </div>
-                <div className="border bg-slate-100 hover:bg-slate-200 rounded px-4 py-2 cursor-pointer w-1/2 flex justify-center items-center">
-                    <FaGithub className="text-4xl" />
-                </div>
-            </div>
+           <SocialProviders />
         </form>
     )
 }

@@ -5,10 +5,10 @@ const ProfilePage = async () => {
     const session = await auth();
     
     return (
-        <div>
+        <div className="flex items-center justify-center flex-col">
             {session?.user &&
                 <>
-                    <p className="mb-5">{JSON.stringify(session)}</p>
+                    <p className="mb-5 text-center px-9">{JSON.stringify(session)}</p>
                     <h1 className="text-3xl font-bold mb-7">
                         Welcome {session.user.name} to your profile
                     </h1>

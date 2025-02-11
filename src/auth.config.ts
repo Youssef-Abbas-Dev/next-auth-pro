@@ -1,5 +1,6 @@
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import GitHub from "next-auth/providers/github";
 import { prisma } from "./utils/prisma";
 import { LoginSchema } from "./utils/validationSchmas";
 import * as bcrypt from "bcryptjs";
@@ -20,6 +21,10 @@ export default {
 
                 return null;
             }
+        }),
+        GitHub({
+            clientId: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET
         })
     ]
 } satisfies NextAuthConfig
