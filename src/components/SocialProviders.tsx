@@ -13,7 +13,7 @@ const SocialProviders = () => {
 
   return (
     <div className="flex items-center justify-center gap-6 mt-6">
-      <div className="border bg-blue-100 hover:bg-blue-200 rounded px-4 py-2 cursor-pointer w-1/2 flex justify-center items-center">
+      <div onClick={() => socialLoginHandler("google")} className="border bg-blue-100 hover:bg-blue-200 rounded px-4 py-2 cursor-pointer w-1/2 flex justify-center items-center">
         <FcGoogle className="text-4xl" />
       </div>
       <div onClick={() => socialLoginHandler('github')} className="border bg-slate-100 hover:bg-slate-200 rounded px-4 py-2 cursor-pointer w-1/2 flex justify-center items-center">
