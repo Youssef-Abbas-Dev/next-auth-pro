@@ -11,9 +11,16 @@ const { handlers, auth, signIn, signOut } = NextAuth({
                 session.user.id = token.sub;
 
                 const user = await prisma.user.findUnique({ where: { id: token.sub } });
-                if(user) session.user.role = user.role;
+                if (user) session.user.role = user.role;
             }
             return session;
+        },
+        async signIn({ user, account }) {
+            if(account?.provider !== "credentials") return true;
+
+            const userFromDb = await prisma.user.findUnique({ where: { id: user.id } });
+            if (!userFromDb?.emailVerified) return false;
+            return true;
         }
     },
     events: {

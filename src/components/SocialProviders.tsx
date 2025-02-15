@@ -8,7 +8,7 @@ type Provider = "github" | "google";
 const SocialProviders = () => {
 
   const socialLoginHandler = (provider: Provider) => {
-    signIn(provider, { redirectTo: "/profile" })
+    signIn(provider, { redirectTo: "/profile" });
   }
 
   return (

@@ -5,6 +5,7 @@ import { prisma } from "@/utils/prisma";
 import * as bcrypt from 'bcryptjs';
 import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
+import { generateVerificationToken } from "@/utils/generateToken";
 
 // Login Action
 export const loginAction = async (data: z.infer<typeof LoginSchema>) => {
@@ -13,6 +14,17 @@ export const loginAction = async (data: z.infer<typeof LoginSchema>) => {
         return { success: false, message: "Invalid credentials" };
 
     const { email, password } = validation.data;
+
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user || !user.email || !user.password)
+        return { success: false, message: "Invalid credentials" };
+
+    if (!user.emailVerified) {
+        const verificationToken = await generateVerificationToken(email);
+        // @Todo -> send email
+
+        return { success: true, message: "Email sent. verify your email" };
+    }
 
     try {
         await signIn("credentials", { email, password, redirectTo: "/profile" });
@@ -49,7 +61,10 @@ export const registerAction = async (data: z.infer<typeof RegisterSchema>) => {
             data: { email, name, password: hashedPassword }
         });
 
-        return { success: true, message: "Registered successfully" };
+        const verificationToken = await generateVerificationToken(email);
+        // @Todo -> send email
+
+        return { success: true, message: "Email sent. verify your email" };
 
     } catch (error) {
         console.log(error);
