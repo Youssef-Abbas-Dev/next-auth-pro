@@ -6,6 +6,7 @@ import * as bcrypt from 'bcryptjs';
 import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
 import { generateVerificationToken } from "@/utils/generateToken";
+import { sendVerificationToken } from "@/utils/mail";
 
 // Login Action
 export const loginAction = async (data: z.infer<typeof LoginSchema>) => {
@@ -15,18 +16,18 @@ export const loginAction = async (data: z.infer<typeof LoginSchema>) => {
 
     const { email, password } = validation.data;
 
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user || !user.email || !user.password)
-        return { success: false, message: "Invalid credentials" };
-
-    if (!user.emailVerified) {
-        const verificationToken = await generateVerificationToken(email);
-        // @Todo -> send email
-
-        return { success: true, message: "Email sent. verify your email" };
-    }
-
     try {
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user || !user.email || !user.password)
+            return { success: false, message: "Invalid credentials" };
+
+        if (!user.emailVerified) {
+            const verificationToken = await generateVerificationToken(email);
+            await sendVerificationToken(verificationToken.email, verificationToken.token);
+
+            return { success: true, message: "Email sent. verify your email" };
+        }
+        
         await signIn("credentials", { email, password, redirectTo: "/profile" });
     } catch (error) {
         if (error instanceof AuthError) {
@@ -62,7 +63,7 @@ export const registerAction = async (data: z.infer<typeof RegisterSchema>) => {
         });
 
         const verificationToken = await generateVerificationToken(email);
-        // @Todo -> send email
+        await sendVerificationToken(verificationToken.email, verificationToken.token);
 
         return { success: true, message: "Email sent. verify your email" };
 
