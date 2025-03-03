@@ -20,7 +20,7 @@ const VerifyPage = async ({ searchParams }: VerifyPageProps) => {
                         Email Verified
                     </h1>
                     <p className="mt-3 text-green-600 text-xl">
-                        your email verified
+                        Your email verified
                     </p>
                 </div> :
                 <div className="flex items-center justify-center flex-col mb-4">

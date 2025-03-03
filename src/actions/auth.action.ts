@@ -7,9 +7,10 @@ import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
 import { generateVerificationToken } from "@/utils/generateToken";
 import { sendVerificationToken } from "@/utils/mail";
+import { ActionType } from "@/utils/types";
 
 // Login Action
-export const loginAction = async (data: z.infer<typeof LoginSchema>) => {
+export const loginAction = async (data: z.infer<typeof LoginSchema>): Promise<ActionType> => {
     const validation = LoginSchema.safeParse(data);
     if (!validation.success)
         return { success: false, message: "Invalid credentials" };
@@ -27,7 +28,7 @@ export const loginAction = async (data: z.infer<typeof LoginSchema>) => {
 
             return { success: true, message: "Email sent. verify your email" };
         }
-        
+
         await signIn("credentials", { email, password, redirectTo: "/profile" });
     } catch (error) {
         if (error instanceof AuthError) {
@@ -45,7 +46,7 @@ export const loginAction = async (data: z.infer<typeof LoginSchema>) => {
 }
 
 // Register Action
-export const registerAction = async (data: z.infer<typeof RegisterSchema>) => {
+export const registerAction = async (data: z.infer<typeof RegisterSchema>): Promise<ActionType> => {
     const validation = RegisterSchema.safeParse(data);
     if (!validation.success)
         return { success: false, message: "Invalid credentials" };
@@ -74,6 +75,6 @@ export const registerAction = async (data: z.infer<typeof RegisterSchema>) => {
 }
 
 // Logout
-export const logoutAction = async () => {
+export const logoutAction = async (): Promise<void> => {
     await signOut();
 }
