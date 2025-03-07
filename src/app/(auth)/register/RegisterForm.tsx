@@ -43,6 +43,9 @@ const RegisterForm = () => {
             }
 
             setLoading(false);
+        }).catch(() => {
+            setLoading(false);
+            setServerError("Something went wrong, try again");
         });
     }
     return (
@@ -93,7 +96,7 @@ const RegisterForm = () => {
             <button disabled={loading} className="disabled:bg-gray-300 flex items-center justify-center bg-slate-800 hover:bg-slate-900 mt-4 text-white cursor-pointer rounded-lg w-full p-2 text-xl" type="submit">
                 {loading ? <Spinner /> : <><BsPersonPlus className="me-1 text-2xl" /> Register</>}
             </button>
-           <SocialProviders />
+            <SocialProviders />
         </form>
     )
 }

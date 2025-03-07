@@ -17,3 +17,7 @@ export const RegisterSchema = z.object({
 export const ForgotPasswordSchema = z.object({
     email: z.string().email({ message: "Invalid email" })
 });
+
+export const ResetPasswordSchema = z.object({
+    newPassword: z.string().min(6, { message: "Password must be at least 6 characters long" })
+});

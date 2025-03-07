@@ -38,7 +38,10 @@ const ForgotPasswordForm = () => {
             }
 
             setLoading(false);
-        }).catch(() => setServerError("Something went wrong"));
+        }).catch(() => {
+            setLoading(false);
+            setServerError("Something went wrong, try again");
+        });
     }
 
     return (

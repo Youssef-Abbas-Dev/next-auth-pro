@@ -37,7 +37,10 @@ const LoginForm = () => {
 
             if (!result.success) setServerError(result.message);
             setLoading(false);
-        });
+        }).catch(() => {
+            setLoading(false);
+            setServerError("Something went wrong, try again");
+        });;
     }
 
     return (
