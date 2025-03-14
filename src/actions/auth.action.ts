@@ -78,3 +78,17 @@ export const registerAction = async (data: z.infer<typeof RegisterSchema>): Prom
 export const logoutAction = async (): Promise<void> => {
     await signOut();
 }
+
+// Toggle Two Step
+export const toggleTwoStepAction = async (userId: string, isEnabled: boolean): Promise<ActionType> => {
+    try {
+        await prisma.user.update({
+            where: { id: userId },
+            data: { isTwoStepEnabled: isEnabled }
+        });
+        return { success: true, message: "success" }
+    } catch (error) {
+        console.log(error);
+        return { success: false, message: "Something went wrong" }
+    }
+}

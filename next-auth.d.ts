@@ -3,6 +3,6 @@ import { Role } from "@prisma/client";
 
 declare module "next-auth" {
     interface Session {
-        user: DefaultSession["user"] & { role: Role }
+        user: DefaultSession["user"] & { role: Role, isTwoStepEnabled: boolean }
     }
 }

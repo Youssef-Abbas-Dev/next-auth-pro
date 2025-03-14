@@ -40,7 +40,7 @@ const LoginForm = () => {
         }).catch(() => {
             setLoading(false);
             setServerError("Something went wrong, try again");
-        });;
+        });
     }
 
     return (
