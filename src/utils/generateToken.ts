@@ -1,5 +1,5 @@
 import { prisma } from "./prisma";
-import { randomUUID } from "node:crypto";
+import { randomUUID, randomInt } from "node:crypto";
 
 // Generate Verification Token
 export const generateVerificationToken = async (email: string) => {
@@ -34,4 +34,22 @@ export const generateResetPasswordToken = async (email: string) => {
         }
     });
     return newResetPasswordToken;
+}
+
+
+// Generate Two Step Token
+export const generateTwoStepToken = async (email: string) => {
+    const twoStepToken = await prisma.twoStepToken.findFirst({ where: { email } });
+    if (twoStepToken) {
+        await prisma.twoStepToken.delete({ where: { id: twoStepToken.id } });
+    }
+
+    const newTwoStepToken = await prisma.twoStepToken.create({
+        data: {
+            token: randomInt(100000, 1000000).toString(),
+            expires: new Date(new Date().getTime() + 3600 * 1000),
+            email
+        }
+    });
+    return newTwoStepToken;
 }

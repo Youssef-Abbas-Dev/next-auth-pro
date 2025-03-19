@@ -40,4 +40,4 @@ const ToggleTwoStep = ({ userId, isTwoStepEnabled }: ToggleTwoStepProps) => {
     )
 }
 
-export default ToggleTwoStep
+export default ToggleTwoStep;

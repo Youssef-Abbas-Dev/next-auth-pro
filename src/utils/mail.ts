@@ -37,3 +37,18 @@ export const sendResetPasswordToken = async (email: string, token: string) => {
   });
 }
 
+
+// Send Two Step Token
+export const sendTwoStepToken = async (email: string, token: string) => {
+
+  await resend.emails.send({
+    from: 'onboarding@resend.dev',
+    to: email,
+    subject: 'Two Step Code',
+    html: `
+       <h1>
+        Code: ${token}
+       </h1>
+      `
+  });
+}

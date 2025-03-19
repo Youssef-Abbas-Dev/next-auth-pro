@@ -5,17 +5,17 @@ import { prisma } from "@/utils/prisma";
 import * as bcrypt from 'bcryptjs';
 import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
-import { generateVerificationToken } from "@/utils/generateToken";
-import { sendVerificationToken } from "@/utils/mail";
-import { ActionType } from "@/utils/types";
+import { generateTwoStepToken, generateVerificationToken } from "@/utils/generateToken";
+import { sendTwoStepToken, sendVerificationToken } from "@/utils/mail";
+import { ActionType, LoginType } from "@/utils/types";
 
 // Login Action
-export const loginAction = async (data: z.infer<typeof LoginSchema>): Promise<ActionType> => {
+export const loginAction = async (data: z.infer<typeof LoginSchema>): Promise<LoginType> => {
     const validation = LoginSchema.safeParse(data);
     if (!validation.success)
         return { success: false, message: "Invalid credentials" };
 
-    const { email, password } = validation.data;
+    const { email, password, code } = validation.data;
 
     try {
         const user = await prisma.user.findUnique({ where: { email } });
@@ -27,6 +27,35 @@ export const loginAction = async (data: z.infer<typeof LoginSchema>): Promise<Ac
             await sendVerificationToken(verificationToken.email, verificationToken.token);
 
             return { success: true, message: "Email sent. verify your email" };
+        }
+
+        if (user.isTwoStepEnabled && user.email) {
+            if (code) {
+                const twoStepTokenFromDb = await prisma.twoStepToken.findFirst({ where: { email: user.email } });
+                if (!twoStepTokenFromDb)
+                    return { success: false, message: "No token provided" };
+
+                if (twoStepTokenFromDb.token !== code)
+                    return { success: false, message: "Invalid code" };
+
+                const isExpired = new Date(twoStepTokenFromDb.expires) < new Date();
+                if (isExpired)
+                    return { success: false, message: "Token is expired" };
+
+                await prisma.twoStepToken.delete({ where: { id: twoStepTokenFromDb.id } });
+
+                const twoStepConfirmation = await prisma.twoStepConfirmation.findUnique({ where: { userId: user.id } });
+                if (twoStepConfirmation)
+                    await prisma.twoStepConfirmation.delete({ where: { id: twoStepConfirmation.id } });
+
+                await prisma.twoStepConfirmation.create({
+                    data: { userId: user.id }
+                });
+            } else {
+                const twoStepToken = await generateTwoStepToken(user.email);
+                await sendTwoStepToken(twoStepToken.email, twoStepToken.token);
+                return { success: true, message: "Confirmation code sent to your email", twoStep: true };
+            }
         }
 
         await signIn("credentials", { email, password, redirectTo: "/profile" });
