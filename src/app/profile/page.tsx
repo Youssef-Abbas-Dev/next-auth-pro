@@ -1,10 +1,11 @@
 import { auth } from "@/auth";
 import { logoutAction } from "@/actions/auth.action";
 import ToggleTwoStep from "./ToggleTwoStep";
+import ClientProfile from "./ClientProfile";
+import { SessionProvider } from "next-auth/react";
 
 const ProfilePage = async () => {
     const session = await auth();
-
 
     return (
         <div className="flex items-center justify-center flex-col">
@@ -22,6 +23,9 @@ const ProfilePage = async () => {
                     {session.user.id && <ToggleTwoStep userId={session.user.id} isTwoStepEnabled={session.user.isTwoStepEnabled} />}
                 </>
             }
+            <SessionProvider session={session}>
+                <ClientProfile />
+            </SessionProvider>
         </div>
     )
 }
