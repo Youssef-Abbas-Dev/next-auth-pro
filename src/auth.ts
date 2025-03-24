@@ -14,6 +14,8 @@ const { handlers, auth, signIn, signOut } = NextAuth({
                 if (user) {
                     session.user.role = user.role;
                     session.user.isTwoStepEnabled = user.isTwoStepEnabled;
+                    session.user.name = user.name;
+                    token.name = user.name;
                 }
             }
             return session;
@@ -26,7 +28,7 @@ const { handlers, auth, signIn, signOut } = NextAuth({
 
             if (userFromDb.isTwoStepEnabled) {
                 const twoStepConfirmation = await prisma.twoStepConfirmation.findUnique({ where: { userId: user.id } });
-                if(!twoStepConfirmation) return false;
+                if (!twoStepConfirmation) return false;
                 await prisma.twoStepConfirmation.delete({ where: { id: twoStepConfirmation.id } });
             }
 

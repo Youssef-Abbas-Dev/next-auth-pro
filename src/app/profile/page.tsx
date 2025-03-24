@@ -3,6 +3,7 @@ import { logoutAction } from "@/actions/auth.action";
 import ToggleTwoStep from "./ToggleTwoStep";
 import ClientProfile from "./ClientProfile";
 import { SessionProvider } from "next-auth/react";
+import Link from "next/link";
 
 const ProfilePage = async () => {
     const session = await auth();
@@ -11,6 +12,9 @@ const ProfilePage = async () => {
         <div className="flex items-center justify-center flex-col">
             {session?.user &&
                 <>
+                    <Link href="/profile/edit" className="mb-5 underline text-green-700">
+                        Edit Your Name
+                    </Link>
                     <p className="mb-5 text-center px-9">{JSON.stringify(session)}</p>
                     <h1 className="text-3xl font-bold mb-7">
                         Welcome {session.user.name} to your profile

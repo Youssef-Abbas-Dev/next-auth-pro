@@ -5,7 +5,7 @@ import NextAuth from "next-auth";
 const { auth: middleware } = NextAuth(authConfig);
 
 const authRoutes = ["/login", "/register", "/verify", "/forgot-password", "/reset-password"];
-const protectedRotues = ["/profile"];
+const protectedRotues = ["/profile", "/profile/edit"];
 
 export default middleware((req) => {
     const { nextUrl } = req;
@@ -20,5 +20,5 @@ export default middleware((req) => {
 });
 
 export const config = {
-    matcher: ["/login", "/register", "/profile", "/verify", "/forgot-password", "/reset-password"]
+    matcher: ["/login", "/register", "/profile/:path*", "/verify", "/forgot-password", "/reset-password"]
 }
