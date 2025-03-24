@@ -1,5 +1,6 @@
 import Link from "next/link";
 import ResetPasswordForm from "./ResetPasswordFrom";
+import { Suspense } from "react";
 
 const ResetPasswordPage = () => {
     return (
@@ -8,7 +9,9 @@ const ResetPasswordPage = () => {
                 <h1 className="font-bold text-3xl text-slate-700 mb-5 text-center">
                     Reset your password
                 </h1>
-                <ResetPasswordForm />
+                <Suspense>
+                    <ResetPasswordForm />
+                </Suspense>
                 <p className="p-1 mt-3">
                     <Link href="/login" className="mx-1 text-blue-700 underline">
                         Go to login
